@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hábitos del Olimpo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc4 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c1810;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #faf8f3;
+            border: 3px solid #c9a961;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #c9a961 0%, #d4af37 100%);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid #8b7355;
+            position: relative;
+        }
+
+        .header::before, .header::after {
+            content: '🏛️';
+            font-size: 2rem;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .header::before { left: 20px; }
+        .header::after { right: 20px; }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c1810;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            color: #5a4a3a;
+            font-size: 1.1rem;
+        }
+
+        .habits { padding: 40px 30px; }
+
+        .habit-item {
+            background: linear-gradient(to right, #fff 0%, #f9f6ef 100%);
+            border: 2px solid #c9a961;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .habit-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0;
+            height: 100%; width: 4px;
+            background: #c9a961;
+        }
+
+        .habit-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+        }
+
+        .habit-item.completed {
+            background: linear-gradient(to right, #e8f5e9 0%, #f1f8e9 100%);
+            border-color: #7cb342;
+        }
+        .habit-item.completed::before { background: #7cb342; }
+
+        .checkbox {
+            width: 32px; height: 32px;
+            border: 3px solid #c9a961;
+            border-radius: 50%;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .habit-item.completed .checkbox {
+            background: #7cb342;
+            border-color: #7cb342;
+        }
+
+        .checkbox::after {
+            content: '✓';
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .habit-item.completed .checkbox::after { opacity: 1; }
+
+        .habit-content { flex: 1; }
+
+        .habit-title {
+            font-size: 1.4rem;
+            color: #2c1810;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .habit-description {
+            font-size: 0.95rem;
+            color: #5a4a3a;
+            font-style: italic;
+        }
+
+        .icon { font-size: 2rem; margin-left: 15px; }
+
+        .stats {
+            background: #2c1810;
+            color: #c9a961;
+            padding: 25px 20px;
+            text-align: center;
+            border-top: 3px solid #c9a961;
+        }
+
+        .stats-text { font-size: 1.2rem; margin-bottom: 10px; }
+
+        .progress {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        .streak {
+            font-size: 1rem;
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #8b7355;
+            color: #faf8f3;
+            border: 2px solid #c9a961;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #c9a961;
+            color: #2c1810;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #c9a961;
+        }
+
+        .btn-secondary:hover {
+            background: #c9a961;
+            color: #2c1810;
+        }
+
+        .chart-section {
+            background: #faf8f3;
+            padding: 30px;
+            border-top: 3px solid #c9a961;
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #2c1810;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .chart-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #5a4a3a;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .heatmap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 15px;
+            background: #fff;
+            border: 2px solid #c9a961;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        .heatmap-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .heatmap-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            background: #e8e0d0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.5);
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .heatmap-cell[data-value="1"] { background: #c9e4b0; }
+        .heatmap-cell[data-value="2"] { background: #8bc34a; }
+        .heatmap-cell[data-value="3"] { background: #558b2f; }
+
+        .heatmap-cell.today {
+            outline: 2px solid #d4af37;
+            outline-offset: 1px;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #5a4a3a;
+        }
+
+        .legend-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border: 2px solid #c9a961;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #5a4a3a;
+            margin-top: 4px;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .celebrate { animation: celebrate 0.5s ease; }
+
+        .tooltip {
+            position: fixed;
+            background: #2c1810;
+            color: #faf8f3;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HÁBITOS DEL OLIMPO</h1>
+            <div class="subtitle">Forja tu destino día a día</div>
+        </div>
+
+        <div class="habits">
+            <div class="habit-item" data-habit="visualizar">
+                <div class="checkbox"></div>
+                <div class="habit-content">
+                    <div class="habit-title">VISUALIZAR</div>
+                    <div class="habit-description">Imagina tu futuro con claridad divina</div>
+                </div>
+                <div class="icon">️</div>
+            </div>
+
+            <div class="habit-item" data-habit="agradecer">
+                <div class="checkbox"></div>
+                <div class="habit-content">
+                    <div class="habit-title">AGRADECER</div>
+                    <div class="habit-description">Honra las bendiciones recibidas</div>
+                </div>
+                <div class="icon"></div>
+            </div>
+
+            <div class="habit-item" data-habit="cama">
+                <div class="checkbox"></div>
+                <div class="habit-content">
+                    <div class="habit-title">HACER LA CAMA</div>
+                    <div class="habit-description">Ordena tu espacio, ordena tu mente</div>
+                </div>
+                <div class="icon">🛏️</div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stats-text">Progreso de hoy</div>
+            <div class="progress"><span id="completed">0</span> / 3</div>
+            <div class="streak" id="streak">🔥 Racha: 0 días</div>
+            <div class="actions">
+                <button class="btn" onclick="resetDay()">Reiniciar Día</button>
+                <button class="btn btn-secondary" onclick="exportData()">💾 Exportar</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Importar</button>
+                <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title"> Tu Camino de 80 Días</div>
+            <div class="chart-subtitle">Cada cuadradito es un día. Más verde = más disciplina.</div>
+            <div class="heatmap" id="heatmap"></div>
+            <div class="heatmap-legend">
+                <span>Menos</span>
+                <div class="legend-cell" style="background:#e8e0d0"></div>
+                <div class="legend-cell" style="background:#c9e4b0"></div>
+                <div class="legend-cell" style="background:#8bc34a"></div>
+                <div class="legend-cell" style="background:#558b2f"></div>
+                <span>Más</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalDays">0</div>
+                    <div class="stat-label">Días registrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="perfectDays">0</div>
+                    <div class="stat-label">Días perfectos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgProgress">0%</div>
+                    <div class="stat-label">Promedio</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const STORAGE_KEY = 'olimpo_habits_v2';
+        const habits = document.querySelectorAll('.habit-item');
+        const completedCount = document.getElementById('completed');
+        const streakEl = document.getElementById('streak');
+        const heatmap = document.getElementById('heatmap');
+        const tooltip = document.getElementById('tooltip');
+
+        function getDateKey(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : { history: {}, lastDate: null };
+            } catch (e) {
+                console.error('Error loading data:', e);
+                return { history: {}, lastDate: null };
+            }
+        }
+
+        function saveData(data) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+                // Backup en sessionStorage por si acaso
+                sessionStorage.setItem(STORAGE_KEY + '_backup', JSON.stringify(data));
+            } catch (e) {
+                console.error('Error saving data:', e);
+            }
+        }
+
+        function getTodayKey() {
+            return getDateKey(new Date());
+        }
+
+        function loadState() {
+            const data = loadData();
+            const todayKey = getTodayKey();
+
+            // Si cambió el día, guardar el anterior automáticamente
+            if (data.lastDate && data.lastDate !== todayKey) {
+                saveDayToHistory(data, data.lastDate);
+            }
+
+            data.lastDate = todayKey;
+
+            // Cargar hábitos de hoy
+            const todayHabits = data.history[todayKey] || { visualizar: false, agradecer: false, cama: false };
+            habits.forEach(item => {
+                const name = item.dataset.habit;
+                if (todayHabits[name]) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+
+            saveData(data);
+            updateProgress();
+            renderHeatmap();
+            updateStats();
+        }
+
+        function saveDayToHistory(data, dateKey) {
+            const completed = document.querySelectorAll('.habit-item.completed').length;
+            data.history[dateKey] = {
+                visualizar: data.history[dateKey]?.visualizar || false,
+                agradecer: data.history[dateKey]?.agradecer || false,
+                cama: data.history[dateKey]?.cama || false,
+                total: completed
+            };
+        }
+
+        function saveCurrentState() {
+            const data = loadData();
+            const todayKey = getTodayKey();
+            const state = {};
+            habits.forEach(item => {
+                state[item.dataset.habit] = item.classList.contains('completed');
+            });
+            data.history[todayKey] = {
+                ...state,
+                total: Object.values(state).filter(v => v).length
+            };
+            data.lastDate = todayKey;
+            saveData(data);
+        }
+
+        function updateProgress() {
+            const completed = document.querySelectorAll('.habit-item.completed').length;
+            completedCount.textContent = completed;
+            calculateStreak();
+        }
+
+        function calculateStreak() {
+            const data = loadData();
+            let streak = 0;
+            const today = new Date();
+
+            for (let i = 0; i < 365; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const key = getDateKey(date);
+                const day = data.history[key];
+
+                if (day && day.total === 3) {
+                    streak++;
+                } else if (i === 0) {
+                    // Hoy puede estar en progreso, no romper racha
+                    const completed = document.querySelectorAll('.habit-item.completed').length;
+                    if (completed === 3) streak++;
+                    else break;
+                } else {
+                    break;
+                }
+            }
+
+            streakEl.textContent = `🔥 Racha: ${streak} día${streak !== 1 ? 's' : ''}`;
+        }
+
+        function renderHeatmap() {
+            const data = loadData();
+            const today = new Date();
+            heatmap.innerHTML = '';
+
+            // 80 días = 12 semanas (84 celdas, mostramos 80)
+            const totalDays = 80;
+            const weeks = Math.ceil(totalDays / 7);
+
+            for (let w = 0; w < weeks; w++) {
+                const row = document.createElement('div');
+                row.className = 'heatmap-row';
+
+                for (let d = 0; d < 7; d++) {
+                    const dayIndex = w * 7 + d;
+                    if (dayIndex >= totalDays) break;
+
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - (totalDays - 1 - dayIndex));
+                    const key = getDateKey(date);
+                    const day = data.history[key];
+                    const value = day ? day.total : 0;
+                    const isToday = key === getTodayKey();
+
+                    const cell = document.createElement('div');
+                    cell.className = 'heatmap-cell' + (isToday ? ' today' : '');
+                    cell.dataset.value = value;
+
+                    const dateStr = date.toLocaleDateString('es', {
+                        weekday: 'short', day: 'numeric', month: 'short'
+                    });
+                    cell.dataset.tooltip = `${dateStr}: ${value}/3`;
+
+                    cell.addEventListener('mouseenter', (e) => showTooltip(e, cell.dataset.tooltip));
+                    cell.addEventListener('mouseleave', hideTooltip);
+
+                    row.appendChild(cell);
+                }
+
+                heatmap.appendChild(row);
+            }
+        }
+
+        function updateStats() {
+            const data = loadData();
+            const days = Object.values(data.history);
+            const totalDays = days.length;
+            const perfectDays = days.filter(d => d.total === 3).length;
+            const totalProgress = days.reduce((sum, d) => sum + d.total, 0);
+            const avgProgress = totalDays > 0 ? Math.round((totalProgress / (totalDays * 3)) * 100) : 0;
+
+            document.getElementById('totalDays').textContent = totalDays;
+            document.getElementById('perfectDays').textContent = perfectDays;
+            document.getElementById('avgProgress').textContent = avgProgress + '%';
+        }
+
+        function showTooltip(e, text) {
+            tooltip.textContent = text;
+            tooltip.style.display = 'block';
+            tooltip.style.left = e.clientX + 10 + 'px';
+            tooltip.style.top = e.clientY - 30 + 'px';
+        }
+
+        function hideTooltip() {
+            tooltip.style.display = 'none';
+        }
+
+        // Event listeners
+        habits.forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('completed');
+
+                if (this.classList.contains('completed')) {
+                    this.classList.add('celebrate');
+                    setTimeout(() => this.classList.remove('celebrate'), 500);
+                }
+
+                saveCurrentState();
+                updateProgress();
+                renderHeatmap();
+                updateStats();
+            });
+        });
+
+        function resetDay() {
+            if (confirm('¿Seguro que querés reiniciar el día?')) {
+                habits.forEach(item => item.classList.remove('completed'));
+                saveCurrentState();
+                updateProgress();
+                renderHeatmap();
+                updateStats();
+            }
+        }
+
+        function exportData() {
+            const data = loadData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `habitos-olimpo-${getTodayKey()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.history) {
+                        const current = loadData();
+                        // Merge: no sobrescribir datos existentes
+                        const merged = {
+                            ...current,
+                            history: { ...current.history, ...imported.history }
+                        };
+                        saveData(merged);
+                        loadState();
+                        alert('✅ Datos importados correctamente');
+                    }
+                } catch (err) {
+                    alert('❌ Error al importar: archivo inválido');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Guardar al cerrar la página (último respaldo)
+        window.addEventListener('beforeunload', () => {
+            saveCurrentState();
+        });
+
+        // Inicializar
+        loadState();
+    </script>
+</body>
+</html>
